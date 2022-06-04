@@ -1,33 +1,54 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import MainPageLayout from '../components/MainPageLayout';
+import { apiGet } from '../misc/config';
 
 function Home() {
   const [input, setInput] = useState('');
+  const [result, setResults] = useState(null);
 
   const onInputChange = ev => {
     setInput(ev.target.value);
   };
 
   const onSearch = () => {
-    // https://api.tvmaze.com/singlesearch/shows?q=MEN
-    fetch(`https://api.tvmaze.com/singlesearch/shows?q=${input}`)
-      .then(r => r.json())
-      .then(result => console.log(result));
+    apiGet(`/search/shows?q=${input}`).then(results => {
+      setResults(results);
+    });
   };
 
-  const onKeyDown=(ev)=>{
-     if(ev.keyCode===13)
-     {
-       onSearch();
-     }
-  }
+  const onKeyDown = ev => {
+    if (ev.keyCode === 13) {
+      onSearch();
+    }
+  };
+  const renderResults = () => {
+    if (result && result.length === 0) {
+      return <div>No results</div>;
+    }
+    if (result && result.length > 0) {
+      return (
+        <div>
+          {result.map(item => (
+            <div key={item.show.id}>{item.show.name}</div>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
   return (
     <MainPageLayout>
-      <input type="text" onChange={onInputChange} onKeyDown={onKeyDown} value={input} />
+      <input
+        type="text"
+        onChange={onInputChange}
+        onKeyDown={onKeyDown}
+        value={input}
+      />
       <button type="button" onClick={onSearch}>
         Search
       </button>
+      {renderResults()}
     </MainPageLayout>
   );
 }
