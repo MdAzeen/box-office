@@ -4,9 +4,10 @@ import ActorGrid from '../components/actor/ActorGrid';
 import MainPageLayout from '../components/MainPageLayout';
 import ShowGrid from '../components/shows/ShowGrid';
 import { apiGet } from '../misc/config';
+import { useLastQuery } from '../misc/custom-hooks';
 
 function Home() {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useLastQuery();
   const [result, setResults] = useState(null);
   const[searchOption,setsearchOption]=useState('shows');
   
@@ -23,7 +24,6 @@ function Home() {
   const onRadioChange=(ev)=>{
     setsearchOption(ev.target.value);
   }
-  console.log(searchOption);
   const onKeyDown = ev => {
     if (ev.keyCode === 13) {
       onSearch();
